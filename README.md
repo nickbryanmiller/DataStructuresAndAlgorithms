@@ -9,3 +9,5 @@ This link below will teach you how to do that:
   This will keep it up to date!
 
 Of course you can always take the zip file too from the icons to the right on the base page.
+
+Feel free to contribute anything you think is necessary or good to know (notes or any additional information on anything).
