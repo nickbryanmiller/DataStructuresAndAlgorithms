@@ -12,6 +12,8 @@
 //using namespace std;
 using std::cout;
 
+bool nodeDeleted = false;
+
 class Node{
 public:
     int data;
@@ -55,8 +57,9 @@ public:
             head = new Node(value, NULL);
         else{
             p = head;
-            while(p->next != NULL)
+            while(p->next != NULL) {
                 p = p->next;
+            }
             p->next = new Node(value, NULL);
         }
     }
@@ -96,12 +99,57 @@ public:
     }
     
     void removeNodeWithValue(int value) {
+        Node *p = NULL;
+        Node *nodeToDelete = NULL;
+        nodeDeleted = false;
         
+        if (head->data == value) {
+            nodeToDelete = head;
+            
+            head = nodeToDelete->next;
+            delete nodeToDelete;
+            return;
+        }
+        
+        p = head;
+        nodeToDelete = head->next;
+        
+        while (nodeToDelete != NULL && nodeDeleted == false) {
+            if (nodeToDelete->data == value) {
+                p->next = nodeToDelete->next;
+                
+                delete nodeToDelete;
+                nodeDeleted = true;
+            }
+            //            This works but there is no need for printing something
+            //            else if (nodeToDelete->next == NULL) {
+            //                cout << value << " was not in the list\n\n";
+            //                p = nodeToDelete;
+            //                nodeToDelete = nodeToDelete->next;
+            //            }
+            else {
+                p = nodeToDelete;
+                nodeToDelete = nodeToDelete->next;
+            }
+        }
+    }
+    
+    bool contains(int value) {
+        Node *p = head;
+        
+        while(p != NULL) {
+            if (p->data == value) {
+                return true;
+            }
+            p = p->next;
+        }
+        
+        return false;
     }
     
     void printList() {
         Node *p = head;
-  
+        
         while(p != NULL){
             cout << p->data << "\n";
             p = p->next;
@@ -117,16 +165,16 @@ public:
 
 int main(void){
     linkedList list;
-    list.addNodeToTail(1);
     list.addNodeToTail(2);
+    list.addNodeToTail(3);
     list.addNodeToTail(4);
     list.addNodeToTail(5);
     list.addNodeToTail(6);
     list.addNodeToTail(7);
-    list.addNodeToHead(0);
+    list.addNodeToHead(1);
+    list.addNodeAtIndex(0, 0);
     
-    list.addNodeAtIndex(0, 33);
-    
+    cout << "\n";
     list.printList();
     
     cout << "\n";
