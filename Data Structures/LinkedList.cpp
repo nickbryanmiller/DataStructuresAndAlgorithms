@@ -221,38 +221,6 @@ public:
         cout << getNodeValueWithPosition(position);
     }
     
-    void interleaveMe() {
-        int listSize;
-        int numOfLists;
-        int steps;
-        int input;
-        int difference;
-        
-        cin >> listSize;
-        
-        
-        for (int i = 0; i < listSize; i++) {
-            cin >> input;
-            addNodeToTail(input);
-        }
-        
-        cin >> numOfLists;
-        
-        for (int i = 0; i < numOfLists; i++) {
-            cin >> steps;
-            cin >> listSize;
-            
-            difference = steps + 1;
-            
-            for (int j = 0; j < listSize; j++) {
-                cin >> input;
-                
-                addNodeAtIndex(steps, input);
-                steps = steps + difference;
-            }
-        }
-        
-    }
 };
 
 
