@@ -9,8 +9,8 @@
 #include <iostream>
 
 //This is more efficient because we don't have to look through all of std to find cout.
-//using namespace std;
 using std::cout;
+using std::cin;
 
 class Node{
 public:
@@ -34,6 +34,18 @@ public:
     
     linkedList(){
         head = NULL;
+    }
+    
+    int size() {
+        Node *p = head;
+        int count = 0;
+        
+        while(p != NULL) {
+            count++;
+            p = p->next;
+        }
+        
+        return count;
     }
     
     Node* getNodeAtPosition(int position) {
@@ -200,7 +212,7 @@ public:
         Node *p = head;
         
         while(p != NULL) {
-            cout << p->data << "\n";
+            cout << p->data << " ";
             p = p->next;
         }
     }
@@ -208,29 +220,51 @@ public:
     void printNode(int position) {
         cout << getNodeValueWithPosition(position);
     }
+    
+    void interleaveMe() {
+        int listSize;
+        int numOfLists;
+        int steps;
+        int input;
+        int difference;
+        
+        cin >> listSize;
+        
+        
+        for (int i = 0; i < listSize; i++) {
+            cin >> input;
+            addNodeToTail(input);
+        }
+        
+        cin >> numOfLists;
+        
+        for (int i = 0; i < numOfLists; i++) {
+            cin >> steps;
+            cin >> listSize;
+            
+            difference = steps + 1;
+            
+            for (int j = 0; j < listSize; j++) {
+                cin >> input;
+                
+                addNodeAtIndex(steps, input);
+                steps = steps + difference;
+            }
+        }
+        
+    }
 };
 
 
-int main(void){
+int main(void) {
     linkedList list;
+    list.addNodeToHead(0);
+    list.addNodeToTail(1);
     list.addNodeToTail(2);
     list.addNodeToTail(3);
     list.addNodeToTail(4);
-    list.addNodeToTail(5);
-    list.addNodeToTail(6);
-    list.addNodeToTail(7);
-    list.addNodeToHead(1);
-    list.addNodeAtIndex(0, 0);
     
-    list.addNodeToTail(51);
-    list.addNodeToTail(51);
-    list.addNodeToTail(51);
-    list.addNodeToTail(51);
-    list.addNodeToTail(51);
-    
-    list.removeAllNodesWithValue(51);
-    
-    list.printList();
+    //    cout << list.size();
     
     cout << "\n";
     return(0);
