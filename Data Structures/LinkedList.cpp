@@ -12,8 +12,6 @@
 //using namespace std;
 using std::cout;
 
-bool nodeDeleted = false;
-
 class Node{
 public:
     int data;
@@ -38,7 +36,7 @@ public:
         head = NULL;
     }
     
-    Node* getNode(int position) {
+    Node* getNodeAtPosition(int position) {
         Node *p = head;
         
         while (position--) {
@@ -48,6 +46,43 @@ public:
                 return NULL;
         }
         return p;
+    }
+    
+    Node* getNodeWithValue(int value) {
+        Node *p = head;
+        
+        while (p != NULL) {
+            if (p->data == value) {
+                return p;
+            }
+            p = p->next;
+        }
+        
+        return NULL;
+    }
+    
+    int getNodePostionWithValue(int value) {
+        Node *p = head;
+        int counter = -1;
+        
+        if (p == NULL) {
+            return -1;
+        }
+        
+        while (p != NULL) {
+            counter++;
+            if (p->data == value) {
+                return counter;
+            }
+            p = p->next;
+        }
+        
+        return -1;
+    }
+    
+    int getNodeValueWithPosition(int position) {
+        Node *p = getNodeAtPosition(position);
+        return p->data;
     }
     
     void addNodeToTail(int value) {
@@ -79,7 +114,7 @@ public:
     }
     
     void addNodeAtIndex(int position, int value) {
-        Node *p = getNode(position - 1);
+        Node *p = getNodeAtPosition(position - 1);
         
         if (position == 0) {
             addNodeToHead(value);
@@ -91,17 +126,25 @@ public:
     }
     
     void addNodeAfterIndex(int position, int value) {
-        Node *p = getNode(position);
+        Node *p = getNodeAtPosition(position);
         
         if(p != NULL) {
             p->next = new Node(value, p->next);
         }
     }
     
+    void removeNodeAtPosition(int position) {
+        Node *nodeToDelete = getNodeAtPosition(position);
+        Node *p = getNodeAtPosition(position - 1);
+        
+        p->next = nodeToDelete->next;
+        delete nodeToDelete;
+        
+    }
+    
     void removeNodeWithValue(int value) {
         Node *p = NULL;
         Node *nodeToDelete = NULL;
-        nodeDeleted = false;
         
         if (head->data == value) {
             nodeToDelete = head;
@@ -111,26 +154,32 @@ public:
             return;
         }
         
-        p = head;
-        nodeToDelete = head->next;
+        if (getNodePostionWithValue(value) > 0) {
+            nodeToDelete = getNodeWithValue(value);
+            p = getNodeAtPosition(getNodePostionWithValue(value) - 1);
+            p->next = nodeToDelete->next;
+            delete nodeToDelete;
+        }
         
-        while (nodeToDelete != NULL && nodeDeleted == false) {
-            if (nodeToDelete->data == value) {
-                p->next = nodeToDelete->next;
-                
-                delete nodeToDelete;
-                nodeDeleted = true;
-            }
-            //            This works but there is no need for printing something
-            //            else if (nodeToDelete->next == NULL) {
-            //                cout << value << " was not in the list\n\n";
-            //                p = nodeToDelete;
-            //                nodeToDelete = nodeToDelete->next;
-            //            }
-            else {
-                p = nodeToDelete;
-                nodeToDelete = nodeToDelete->next;
-            }
+    }
+    
+    //    Does not work if all numbers in a list are the same
+    void removeAllNodesWithValue(int value) {
+        Node *p;
+        Node *nodeToDelete;
+        
+        //        while (head->data == value && head != NULL) {
+        //            nodeToDelete = head;
+        //            head = nodeToDelete->next;
+        //            delete nodeToDelete;
+        ////            p = p->next;
+        //        }
+        
+        while (getNodePostionWithValue(value) > 0) {
+            nodeToDelete = getNodeWithValue(value);
+            p = getNodeAtPosition(getNodePostionWithValue(value) - 1);
+            p->next = nodeToDelete->next;
+            delete nodeToDelete;
         }
     }
     
@@ -150,15 +199,14 @@ public:
     void printList() {
         Node *p = head;
         
-        while(p != NULL){
+        while(p != NULL) {
             cout << p->data << "\n";
             p = p->next;
         }
     }
     
     void printNode(int position) {
-        Node *p = getNode(position);
-        cout << p->data;
+        cout << getNodeValueWithPosition(position);
     }
 };
 
@@ -174,7 +222,14 @@ int main(void){
     list.addNodeToHead(1);
     list.addNodeAtIndex(0, 0);
     
-    cout << "\n";
+    list.addNodeToTail(51);
+    list.addNodeToTail(51);
+    list.addNodeToTail(51);
+    list.addNodeToTail(51);
+    list.addNodeToTail(51);
+    
+    list.removeAllNodesWithValue(51);
+    
     list.printList();
     
     cout << "\n";
