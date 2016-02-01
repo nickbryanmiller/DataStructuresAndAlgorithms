@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <ctime>
 
 //This is more efficient because we don't have to look through all of std to find cout.
 using std::cout;
@@ -95,6 +96,14 @@ public:
     int getNodeValueWithPosition(int position) {
         Node *p = getNodeAtPosition(position);
         return p->data;
+    }
+    
+    void pointNodeToPosition(Node* myNode, int position) {
+        Node *p = getNodeAtPosition(position);
+        myNode->next = p;
+    }
+    void pointNodeToNode(Node* node1, Node* node2) {
+        node1->next = node2;
     }
     
     void addNodeToTail(int value) {
@@ -208,6 +217,26 @@ public:
         return false;
     }
     
+    bool hasLoop(){
+        
+        Node *tortoise = head;
+        Node *hare = head;
+        
+        while (tortoise && hare && hare->next) {
+            tortoise = tortoise->next;
+            hare = hare->next->next;
+            
+            if (tortoise == hare) {
+                
+//                removeLoop(tortoise);
+                
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
     void printList() {
         Node *p = head;
         
@@ -217,23 +246,144 @@ public:
         }
     }
     
-    void printNode(int position) {
+    void printNodeAtPosition(int position) {
         cout << getNodeValueWithPosition(position);
     }
     
+//    This method is about 17.37 % faster than the interleaving method below.
+    void interleaveMe() {
+        int listSize;
+        int numOfLists;
+        int steps;
+        int input;
+        int difference;
+        
+        cin >> listSize;
+        
+        
+        for (int i = 0; i < listSize; i++) {
+            cin >> input;
+            addNodeToTail(input);
+        }
+        
+        cin >> numOfLists;
+        
+        for (int i = 0; i < numOfLists; i++) {
+            cin >> steps;
+            cin >> listSize;
+            
+            difference = steps + 1;
+            
+            for (int j = 0; j < listSize; j++) {
+                cin >> input;
+                
+                addNodeAtIndex(steps, input);
+                steps = steps + difference;
+            }
+        }
+        
+    }
+    
+//    This takes about 0.000074 more seconds than the interleaveMe method above
+//    This is because we have to take the time to add the nodes
+    void interleaveMeWithList(linkedList list2, int step) {
+        Node *p = head;
+        Node *pNext;
+        Node *q = list2.head;
+        Node *qNext;
+        
+        
+        if (step == 0) {
+            list2.getNodeAtPosition(list2.size() - 1)->next = p;
+            head = list2.getNodeAtPosition(0);
+        }
+        else {
+            int count = 1;
+            int numLeft = list2.size();
+            
+            while (p != NULL && q != NULL && numLeft > 0) {
+                if (count == step) {
+                    pNext = p->next;
+                    qNext = q->next;
+                    
+                    q->next = pNext;
+                    p->next = q;
+                    
+                    p = pNext;
+                    q = qNext;
+                    
+                    count = 0;
+                    numLeft--;
+                }
+                else {
+                    pNext = p->next;
+                    p = pNext;
+                    pNext = pNext->next;
+                    
+                }
+                
+                count++;
+            }
+            
+            list2.head = q;
+        }
+        
+    }
 };
+//==========================================================================================================================//
 
+
+void getInputsAndMakeListsThenInterleave() {
+    linkedList list1;
+    
+    int listSize;
+    int numOfLists;
+    int steps;
+    int input;
+    cin >> listSize;
+    for (int i = 0; i < listSize; i++) {
+        cin >> input;
+        list1.addNodeToTail(input);
+    }
+    cin >> numOfLists;
+    for (int i = 0; i < numOfLists; i++) {
+        cin >> steps;
+        cin >> listSize;
+        
+        linkedList list2;
+        
+        for (int j = 0; j < listSize; j++) {
+            cin >> input;
+            
+            list2.addNodeToTail(input);
+        }
+        
+        list1.interleaveMeWithList(list2, steps);
+    }
+    
+    list1.printList();
+
+}
+
+void timeCheck() {
+    clock_t begin = clock();
+    
+//    Method to test
+    
+    clock_t end = clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    
+    cout << "The Program took " << elapsed_secs << " seconds";
+}
 
 int main(void) {
     linkedList list;
-    list.addNodeToHead(0);
-    list.addNodeToTail(1);
-    list.addNodeToTail(2);
-    list.addNodeToTail(3);
-    list.addNodeToTail(4);
     
-    //    cout << list.size();
+    list.interleaveMe();
+//    getInputsAndMakeListsThenInterleave();
     
+    list.printList();
+
     cout << "\n";
     return(0);
 }
