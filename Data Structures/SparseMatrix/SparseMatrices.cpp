@@ -7,11 +7,12 @@
 //
 
 #include <iostream>
-#include <ctime>
+//#include <ctime>
 
 //This is more efficient because we don't have to look through all of std to find cout.
 using std::cout;
 using std::cin;
+using std::string;
 
 class Node{
 public:
@@ -38,32 +39,32 @@ class linkedList{
 public:
     
     Node *publicHead;
-    int size;
+    //    int size;
     
     linkedList(){
         head = NULL;
         publicHead = NULL;
         tail = NULL;
-        size = 0;
+        //        size = 0;
     }
     
-    void addNodeToTail(int value, int position) {
+    void addNodeToTailByTail(int value, int position) {
         Node *p;
         
         if(head == NULL) {
             head = new Node(value, position, NULL);
             publicHead = head;
+            tail = head;
         }
         else {
-            p = head;
-            while(p->next != NULL) {
-                p = p->next;
-            }
+            p = tail;
             p->next = new Node(value, position, NULL);
+            tail = p->next;
         }
         
-        size++;
+        //        size++;
     }
+    
     
     Node* containsPositionReturn(int value) {
         Node *p = head;
@@ -109,7 +110,6 @@ public:
     
     void printListOfValue() {
         Node *p = head;
-        
         while(p != NULL) {
             cout << p->data << "\t";
             p = p->next;
@@ -119,19 +119,75 @@ public:
 };
 //==========================================================================================================================//
 
+linkedList* addMatrices(linkedList *sparse1, linkedList *sparse2, linkedList *finMatrix, int rows) {
+    
+    Node *p1;
+    Node *p2;
+    
+    for (int i = 0; i < rows; i++) {
+        
+        p1 = sparse1[i].publicHead;
+        p2 = sparse2[i].publicHead;
+        
+        while (p1 != NULL || p2 != NULL) {
+            
+            if (p1 != NULL && p2 == NULL) {
+                finMatrix[i].addNodeToTailByTail(p1->data, p1->position);
+                
+                p1 = p1->next;
+            }
+            else if (p1 == NULL && p2 != NULL) {
+                finMatrix[i].addNodeToTailByTail(p2->data, p2->position);
+                
+                p2 = p2->next;
+            }
+            else if (p1->position < p2->position) {
+                finMatrix[i].addNodeToTailByTail(p1->data, p1->position);
+                
+                p1 = p1->next;
+            }
+            else if (p1->position == p2->position) {
+                
+                if ((p1->data + p2->data) != 0) {
+                    finMatrix[i].addNodeToTailByTail((p1->data + p2->data), p1->position);
+                }
+                
+                p1 = p1->next;
+                p2 = p2->next;
+            }
+            else if (p1->position > p2->position) {
+                finMatrix[i].addNodeToTailByTail(p2->data, p2->position);
+                
+                p2 = p2->next;
+            }
+        }
+        
+    }
+    
+    return finMatrix;
+}
 
-void timeCheck() {
-    clock_t begin = clock();
+string searchForValue(linkedList *finMatrix, int value, int rows) {
+    Node *p1;
+    string answer = "";
     
-    //    Method to test
+    for (int i = 0; i < rows; i++) {
+        p1 = finMatrix[i].publicHead;
+        while (p1 != NULL) {
+            if (p1->data == value) {
+                //                 cout << i << " " << p1->position << " ";
+                answer = answer + std::to_string(i) + " " + std::to_string(p1->position) + " ";
+            }
+            p1 = p1->next;
+        }
+    }
     
-    clock_t end = clock();
-    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-    
-    cout << "The Program took " << elapsed_secs << " seconds";
+    answer = answer + "\n";
+    return answer;
 }
 
 void doMatrixAdditionThenFindValue() {
+    
     // Input variables.
     int numElements;
     int column;
@@ -147,9 +203,14 @@ void doMatrixAdditionThenFindValue() {
             cin >> column;
             cin >> value;
             
-            mySparse1[i].addNodeToTail(value, column);
+            if (value != 0) {
+                mySparse1[i].addNodeToTailByTail(value, column);
+            }
         }
     }
+    
+    //    cout << "------------------------------------------------------------------------";
+    //    cout << "matrix one done\n";
     
     int rows2;
     cin >> rows2;
@@ -161,34 +222,39 @@ void doMatrixAdditionThenFindValue() {
             cin >> column;
             cin >> value;
             
-            mySparse2[i].addNodeToTail(value, column);
+            if (value != 0) {
+                mySparse2[i].addNodeToTailByTail(value, column);
+            }
         }
     }
     
+    //    cout << "------------------------------------------------------------------------";
+    //    cout << "matrix two done\n";
+    
     linkedList *finMatrix = new linkedList[rows1];
-//    finMatrix = addMatrices(mySparse1, mySparse2, finMatrix, rows1);
+    finMatrix = addMatrices(mySparse1, mySparse2, finMatrix, rows1);
     
     int searchAmount;
     cin >> searchAmount;
     
     int searchValue;
+    
+    string answer = "";
     for (int i = 0; i < searchAmount; i++) {
         cin >> searchValue;
-//        searchForValue(finMatrix, searchValue, rows1);
-        cout << "\n";
+        answer = answer + searchForValue(finMatrix, searchValue, rows1);
+        //        cout << "\n";
     }
     
-//    // This prints the matrices.
-//    for (int i = 0; i < rows1; i++) {
-//        finMatrix[i].printListOfPosAndValue();
-//        cout << "\n";
-//    }
-
+    cout << answer;
+    
 }
 
 int main(void) {
     
-//    doMatrixAdditionThenFindValue();
+    std::ios::sync_with_stdio(false);
+    
+    doMatrixAdditionThenFindValue();
     
     cout << "\n";
     return(0);
