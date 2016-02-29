@@ -238,7 +238,7 @@ void inorder(Node *t) {
     }
 }
 
-double doMath(double a, double b, string op) {
+double doMathFromTree(double a, double b, string op) {
     double answer = 0;
     
     if (op == "+") {
@@ -271,14 +271,14 @@ double evaluatetree(Node *x){
             double a = evaluatetree(x->leftChild);
             double b = evaluatetree(x->rightChild);
             
-            return doMath(a, b, x->data);
+            return doMathFromTree(a, b, x->data);
         }
     }
     
     return 0;
 }
 
-//int eval(int op1, int op2, string operate) {
+//int evalFromStack(int op1, int op2, string operate) {
 //    switch (operate[0]) {
 //        case '*': return op2 * op1;
 //        case '/': return op2 / op1;
@@ -287,7 +287,7 @@ double evaluatetree(Node *x){
 //        default : return 0;
 //    }
 //}
-//int evalPostfix(string postfix[], int size) {
+//int evalPostfixWithStack(string postfix[], int size) {
 //    stack<int> s;
 //    int i = 0;
 //    string ch;
@@ -308,7 +308,7 @@ double evaluatetree(Node *x){
 //            s.pop();
 //            int op2 = s.top();
 //            s.pop();
-//            val = eval(op1, op2, ch);
+//            val = evalFromStack(op1, op2, ch);
 //            // push the value obtained after evaluating
 //            // onto the stack
 //            s.push(val);
@@ -353,7 +353,7 @@ int main(int argc, const char * argv[]) {
     double answer = evaluatetree(root);
     cout << "\n" << answer;
     
-//    int answer = evalPostfix(postfixArray, size);
+//    int answer = evalPostfixWithStack(postfixArray, size);
 //    cout << "\n" << answer;
     
 //    for (int i = 0; i < size; i++) {
