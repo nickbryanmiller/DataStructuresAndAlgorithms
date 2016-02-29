@@ -52,90 +52,6 @@ int getPrecedence(char token) {
     }
 }
 
-//string infixToPostfix(string infix) {
-//    stack<char> myStack;
-//    string postfix = "";
-//    int prec = 0;
-//    
-//    int i = 0;
-//    
-//    for (i = 0; i < infix.size(); i++) {
-//
-//        if (infix[i] != ' ' ) {
-//            prec = getPrecedence(infix[i]);
-//            
-//            if (prec == -1) {
-//                while (!myStack.empty() && myStack.top() != '(') {
-//                    postfix = postfix + myStack.top() + ' ';
-//                    myStack.pop();
-//                }
-//                if (myStack.top() == '(') {
-//                    myStack.pop();
-//                }
-//            }
-//            else if (prec == 0) {
-//                myStack.push(infix[i]);
-//            }
-//            else if (prec == 1) {
-//                while (getPrecedence(infix[i]) == 1) {
-//                    postfix = postfix + infix[i];
-//                    i++;
-//                }
-//                postfix = postfix + ' ';
-//            }
-//            else if (prec == 2) {
-//                if (!myStack.empty()) {
-//                    if (prec > (getPrecedence(myStack.top()))) {
-//                        myStack.push(infix[i]);
-//                    }
-//                    else {
-//                        postfix = postfix + myStack.top() + ' ';
-//                        myStack.pop();
-//                        myStack.push(infix[i]);
-//                    }
-//                }
-//                else {
-//                    myStack.push(infix[i]);
-//                }
-//            }
-//            else if (prec == 3) {
-//                if (!myStack.empty()) {
-//                    if (prec > (getPrecedence(myStack.top()))) {
-//                        myStack.push(infix[i]);
-//                    }
-//                    else {
-//                        postfix = postfix + myStack.top() + ' ';
-//                        myStack.pop();
-//                        myStack.push(infix[i]);
-//                    }
-//                }
-//                else {
-//                    myStack.push(infix[i]);
-//                }
-//            }
-//            else if (prec == 4) {
-//                if (!myStack.empty()) {
-//                    if (prec >= (getPrecedence(myStack.top()))) {
-//                        myStack.push(infix[i]);
-//                    }
-//                }
-//                else {
-//                    myStack.push(infix[i]);
-//                }
-//            }
-//        }
-//        
-//        if (i >= infix.size() - 1) {
-//            while (!myStack.empty()) {
-//                postfix = postfix + myStack.top() + ' ';
-//                myStack.pop();
-//            }
-//        }
-//    }
-//    
-//    return postfix;
-//}
-
 queue<string> infixToPostfix(string infix) {
     queue<string> myQueue;
     
@@ -253,13 +169,18 @@ int main(int argc, const char * argv[]) {
     
     string infix = "";
     getline(cin, infix);
-    
-//    string postfix = infixToPostfix(infix);
-//    cout << postfix;
-    
     infix.erase(std::remove(infix.begin(), infix.end(), ' '), infix.end());
-    
     cout << infix << "\n";
+    
+//    string *expression = new string[2];
+//    expression[0] = "";
+//    expression[1] = "";
+//    if (infix.substr(0,3) == "let") {
+//        int positionEqual = int(infix.find('='));
+//        expression[0] = infix.substr(3, positionEqual - 3);
+//        expression[1] = infix.substr(positionEqual + 1);
+//    }
+//    cout << expression[0] << "\t" << expression[1];
     
     queue<string> myQueue;
     myQueue = infixToPostfix(infix);
