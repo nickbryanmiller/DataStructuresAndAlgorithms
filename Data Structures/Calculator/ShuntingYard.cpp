@@ -24,8 +24,26 @@ using std::stringstream;
 using std::istringstream;
 using std::endl;
 
-int getPrecedence(char token) {
+class Node{
+public:
+    string data;
+    Node *leftChild;
+    Node *rightChild;
+    Node *parent;
     
+    Node(string x) {
+        data = x;
+        leftChild = NULL;
+        rightChild = NULL;
+    }
+    Node(string x, Node *left, Node *right) {
+        data = x;
+        leftChild = left;
+        rightChild = right;
+    }
+};
+
+int getPrecedence(char token) {
     if (token == ')') {
         return -1;
     }
@@ -92,6 +110,7 @@ queue<string> infixToPostfix(string infix) {
             }
         }
         else if (prec == 2) {
+            
             string postfix = "";
             
             if (!myStack.empty()) {
@@ -164,6 +183,142 @@ queue<string> infixToPostfix(string infix) {
     return myQueue;
 }
 
+bool isOperator(string token) {
+    if (token == "+" || token == "-" || token == "*" || token == "/" || token == "^") {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+Node* createTreeWithPostfix(string postfix[], int size) {
+    stack<Node*> st;
+    
+    Node *root;
+    Node *right;
+    Node *left;
+    
+    // Traverse through every character
+    for (int i=0; i< size; i++) {
+        // If operand push to stack
+        if (!isOperator(postfix[i])) {
+            root = new Node(postfix[i]);
+            st.push(root);
+        }
+        else {
+            root = new Node(postfix[i]);
+            
+            // Pop two top nodes
+            right = st.top(); // Store top
+            st.pop();      // Remove top
+            left = st.top();
+            st.pop();
+            
+            //  make them children
+            root->rightChild = right;
+            root->leftChild = left;
+            
+            // Add this subexpression to stack
+            st.push(root);
+        }
+    }
+
+    root = st.top();
+    st.pop();
+    
+    return root;
+}
+
+void inorder(Node *t) {
+    if(t) {
+        inorder(t->leftChild);
+        cout << t->data << " ";
+        inorder(t->rightChild);
+    }
+}
+
+double doMath(double a, double b, string op) {
+    double answer = 0;
+    
+    if (op == "+") {
+        answer = a + b;
+    }
+    else if (op == "-") {
+        answer = a - b;
+    }
+    else if (op == "*") {
+        answer = a * b;
+    }
+    else if (op == "/") {
+        answer = a / b;
+    }
+    else if (op == "^") {
+        answer = pow(a, b);
+    }
+
+    return answer;
+}
+
+double evaluatetree(Node *x){
+    
+    if (x != NULL) {
+        if (!isOperator(x->data)) {
+            return stod(x->data);
+        }
+        else if (isOperator(x->data)) {
+            
+            double a = evaluatetree(x->leftChild);
+            double b = evaluatetree(x->rightChild);
+            
+            return doMath(a, b, x->data);
+        }
+    }
+    
+    return 0;
+}
+
+//int eval(int op1, int op2, string operate) {
+//    switch (operate[0]) {
+//        case '*': return op2 * op1;
+//        case '/': return op2 / op1;
+//        case '+': return op2 + op1;
+//        case '-': return op2 - op1;
+//        default : return 0;
+//    }
+//}
+//int evalPostfix(string postfix[], int size) {
+//    stack<int> s;
+//    int i = 0;
+//    string ch;
+//    int val = 0;
+//    while (i < size) {
+//        ch = postfix[i];
+//        if (!isOperator(ch)) {
+//            // we saw an operand
+//            // push the digit onto stack
+//            s.push(std::stoi(ch));
+//        }
+//        else {
+//            // we saw an operator
+//            // pop off the top two operands from the
+//            // stack and evalute them using the current
+//            // operator
+//            int op1 = s.top();
+//            s.pop();
+//            int op2 = s.top();
+//            s.pop();
+//            val = eval(op1, op2, ch);
+//            // push the value obtained after evaluating
+//            // onto the stack
+//            s.push(val);
+//        }
+//        i++;
+//    }
+//    return val;
+//}
+
+
 int main(int argc, const char * argv[]) {
     std::ios::sync_with_stdio(false);
     
@@ -186,18 +341,24 @@ int main(int argc, const char * argv[]) {
     myQueue = infixToPostfix(infix);
     int size = int(myQueue.size());
     
-    string *infixArray = new string[myQueue.size()];
+    string *postfixArray = new string[myQueue.size()];
     int i = 0;
     while (!myQueue.empty()) {
-        infixArray[i] = myQueue.front();
+        postfixArray[i] = myQueue.front();
         myQueue.pop();
         i++;
     }
     
-    cout << "\n";
-    for (int i = 0; i < size; i++) {
-        cout << infixArray[i] << " ";
-    }
+    Node *root = createTreeWithPostfix(postfixArray, size);
+    double answer = evaluatetree(root);
+    cout << "\n" << answer;
+    
+//    int answer = evalPostfix(postfixArray, size);
+//    cout << "\n" << answer;
+    
+//    for (int i = 0; i < size; i++) {
+//        cout << postfixArray[i] << " ";
+//    }
     
     cout << "\n";
     return 0;
