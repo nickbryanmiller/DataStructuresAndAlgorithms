@@ -387,7 +387,7 @@ int main(int argc, const char * argv[]) {
         
         getline(cin, infix);
         infix.erase(std::remove(infix.begin(), infix.end(), ' '), infix.end());
-        cout <<infix << "\n";
+//        cout <<infix << "\n";
         
         string *expression = new string[2];
         expression[0] = "";
@@ -413,7 +413,9 @@ int main(int argc, const char * argv[]) {
         }
 
         if (isVari) {
-            cout << ht.get(&infix[0]) << "\n";
+            if (infix != "quit") {
+                cout << ht.get(&infix[0]) << "\n";
+            }
         }
 //        cout << expression[0] << "\t" << expression[1] << "\n";
         
@@ -430,7 +432,10 @@ int main(int argc, const char * argv[]) {
             }
             Node *root = createTreeWithPostfix(postfixArray, size);
             double answer = evaluatetree(root);
-            cout << answer << "\n";
+            
+            if (infix.substr(0,3) != "let") {
+                cout << answer << "\n";
+            }
             
 //            for (int i = 0; i < size; i++) {
 //                cout << postfixArray[i] << " ";
