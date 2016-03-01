@@ -427,36 +427,34 @@ int main(int argc, const char * argv[]) {
         if (!isVari) {
             queue<string> myQueue;
             myQueue = infixToPostfix(expression[1]);
-            int size = int(myQueue.size());
-            string *postfixArray = new string[myQueue.size()];
-            int i = 0;
-            while (!myQueue.empty()) {
-                postfixArray[i] = myQueue.front();
-                myQueue.pop();
-                i++;
-            }
-            Node *root = createTreeWithPostfix(postfixArray, size);
-            double answer = evaluatetree(root);
             
-            if (infix.substr(0,3) != "let" && !didDivideByZero && !variableDoesNotExist) {
-                cout << answer << "\n";
+            if (!variableDoesNotExist) {
+                int size = int(myQueue.size());
+                string *postfixArray = new string[myQueue.size()];
+                int i = 0;
+                while (!myQueue.empty()) {
+                    postfixArray[i] = myQueue.front();
+                    myQueue.pop();
+                    i++;
+                }
+                Node *root = createTreeWithPostfix(postfixArray, size);
+                double answer = evaluatetree(root);
+                
+                if (infix.substr(0,3) != "let" && !didDivideByZero) {
+                    cout << answer << "\n";
+                }
+                if (!didDivideByZero) {
+                    ht.put("ans", answer);
+                    if (expression[0] != "") {
+                        ht.put(expression[0], answer);
+                    }
+                }
+                else if (didDivideByZero){
+                    cout << "Division-By-Zero\n";
+                }
             }
             else if (variableDoesNotExist) {
                 cout << "Undeclared-Variable\n";
-            }
-            else if (didDivideByZero){
-                cout << "Division-By-Zero\n";
-            }
-            
-//            for (int i = 0; i < size; i++) {
-//                cout << postfixArray[i] << " ";
-//            }
-            
-            if (!didDivideByZero && !variableDoesNotExist) {
-                ht.put("ans", answer);
-                if (expression[0] != "") {
-                    ht.put(expression[0], answer);
-                }
             }
         }
     }
