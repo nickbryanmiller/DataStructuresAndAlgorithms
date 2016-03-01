@@ -27,6 +27,9 @@ using std::istringstream;
 using std::endl;
 using std::unordered_map;
 
+bool didDivideByZero = false;
+bool variableDoesNotExist = false;
+
 class Node{
 public:
     string data;
@@ -213,7 +216,9 @@ queue<string> infixToPostfix(string infix) {
                 myQueue.push(vari);
             }
             else if (vari == "NA") {
-                cout << "\nUndeclared-Variable";
+                myQueue.push("0");
+                variableDoesNotExist = true;
+//                cout << "\nUndeclared-Variable";
             }
             if (getPrecedence(infix[i]) > -2) {
                 i--;
@@ -305,7 +310,8 @@ double doMathFromTree(double a, double b, string op) {
         answer = a / b;
         
         if (b == 0) {
-            cout << "\nDivision-By-Zero";
+//            cout << "\nDivision-By-Zero";
+            didDivideByZero = true;
         }
     }
     else if (op == "^") {
@@ -376,13 +382,12 @@ double evaluatetree(Node *x){
 int main(int argc, const char * argv[]) {
     std::ios::sync_with_stdio(false);
     
-    ht.put("x", 12);
-    ht.put("y", 4);
-    
     string infix = "";
     
     while (infix != "quit") {
         
+        didDivideByZero = false;
+        variableDoesNotExist = false;
         bool isVari = true;
         
         getline(cin, infix);
@@ -433,17 +438,25 @@ int main(int argc, const char * argv[]) {
             Node *root = createTreeWithPostfix(postfixArray, size);
             double answer = evaluatetree(root);
             
-            if (infix.substr(0,3) != "let") {
+            if (infix.substr(0,3) != "let" && !didDivideByZero && !variableDoesNotExist) {
                 cout << answer << "\n";
+            }
+            else if (variableDoesNotExist) {
+                cout << "Undeclared-Variable\n";
+            }
+            else if (didDivideByZero){
+                cout << "Division-By-Zero\n";
             }
             
 //            for (int i = 0; i < size; i++) {
 //                cout << postfixArray[i] << " ";
 //            }
             
-            ht.put("ans", answer);
-            if (expression[0] != "") {
-                ht.put(expression[0], answer);
+            if (!didDivideByZero && !variableDoesNotExist) {
+                ht.put("ans", answer);
+                if (expression[0] != "") {
+                    ht.put(expression[0], answer);
+                }
             }
         }
     }
