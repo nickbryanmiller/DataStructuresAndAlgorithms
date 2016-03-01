@@ -109,8 +109,10 @@ private:
     }
 public:
     HashTable() {
+        // Specify so that it is a float constant to the compiler
+        // 0.75 is recommended for max memory efficiency and time efficiency
         threshold = 0.75f;
-        maxSize = 96;
+        maxSize = 100;
         tableSize = DEFAULT_TABLE_SIZE;
         size = 0;
         table = new LinkedHashEntry*[tableSize];
@@ -118,15 +120,22 @@ public:
             table[i] = NULL;
         }
     }
+    
+    // This sets the maximum size so we can check when we start reaching capacity
     void setThreshold(float threshold) {
         this->threshold = threshold;
         maxSize = (int) (tableSize * threshold);
     }
+    
+    // Returns the value associated with a key else returns 'NA'
     string get(string key) {
+        // Modular tablesize is used to get the index because it is an even number and not many collisions occur
+        // It might be useful to find the nearest prime around tablesize instead
         int hash = (str_hash(key) % tableSize);
         if (table[hash] == NULL) {
             return "NA";
         }
+        // If the position is not null we travel the linked list looking for the same key
         else {
             LinkedHashEntry *entry = table[hash];
             while (entry != NULL && entry->getKey() != key) {
@@ -140,12 +149,18 @@ public:
             }
         }
     }
+    
+    // This method sets a value for a particular key
     void put(string key, double value) {
         int hash = (str_hash(key) % tableSize);
+        
+        // If the index is null we make a new node in that bucket with the key/value pair
         if (table[hash] == NULL) {
             table[hash] = new LinkedHashEntry(key, value);
             size++;
         }
+        
+        // Else we search the bucket to make sure it does not exist before adding it
         else {
             LinkedHashEntry *entry = table[hash];
             while (entry->getNext() != NULL) {
@@ -159,6 +174,8 @@ public:
                 size++;
             }
         }
+        
+        // If our size ever reaches the max size we double the table and copy the data over.
         if (size >= maxSize) {
             resize();
         }
