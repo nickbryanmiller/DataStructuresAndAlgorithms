@@ -73,6 +73,7 @@ public:
     
 };
 
+Hashtable ht;
 
 int getPrecedence(char token) {
     if (token == ')') {
@@ -103,7 +104,6 @@ int getPrecedence(char token) {
 
 queue<string> infixToPostfix(string infix) {
     queue<string> myQueue;
-    
     stack<char> myStack;
     int prec = 0;
     
@@ -200,6 +200,26 @@ queue<string> infixToPostfix(string infix) {
             }
         }
         
+        if (prec == -3) {
+            string postfix = "";
+            
+            while (getPrecedence(infix[i]) == -3 && i < infix.size()) {
+                postfix += infix[i];
+                i++;
+            }
+//            cout << "\nvariable: " << postfix << "\n";
+            string vari = ht.get(postfix);
+            if (vari != "NA") {
+                myQueue.push(vari);
+            }
+            else if (vari == "NA") {
+                cout << "\nUndeclared-Variable";
+            }
+            if (getPrecedence(infix[i]) > -2) {
+                i--;
+            }
+        }
+        
         if (i >= infix.size() - 1) {
             string postfix = "";
             
@@ -283,6 +303,10 @@ double doMathFromTree(double a, double b, string op) {
     }
     else if (op == "/") {
         answer = a / b;
+        
+        if (b == 0) {
+            cout << "\nDivision-By-Zero";
+        }
     }
     else if (op == "^") {
         answer = pow(a, b);
@@ -352,7 +376,8 @@ double evaluatetree(Node *x){
 int main(int argc, const char * argv[]) {
     std::ios::sync_with_stdio(false);
     
-    Hashtable ht;
+    ht.put("x", 12);
+    ht.put("y", 4);
     
     string infix = "";
     
@@ -362,6 +387,7 @@ int main(int argc, const char * argv[]) {
         
         getline(cin, infix);
         infix.erase(std::remove(infix.begin(), infix.end(), ' '), infix.end());
+        cout <<infix << "\n";
         
         string *expression = new string[2];
         expression[0] = "";
@@ -373,8 +399,7 @@ int main(int argc, const char * argv[]) {
             
             isVari = false;
         }
-        else if (getPrecedence(infix[0]) > -2) {
-            isVari = false;
+        else if (infix.substr(0,3) != "let") {
             expression[0] = "";
             expression[1] = infix.substr(0);
         }
@@ -386,6 +411,7 @@ int main(int argc, const char * argv[]) {
                 i = int(infix.size());
             }
         }
+
         if (isVari) {
             cout << ht.get(&infix[0]) << "\n";
         }
@@ -406,8 +432,11 @@ int main(int argc, const char * argv[]) {
             double answer = evaluatetree(root);
             cout << answer << "\n";
             
+//            for (int i = 0; i < size; i++) {
+//                cout << postfixArray[i] << " ";
+//            }
+            
             ht.put("ans", answer);
-
             if (expression[0] != "") {
                 ht.put(expression[0], answer);
             }
