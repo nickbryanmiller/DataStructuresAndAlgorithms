@@ -14,6 +14,8 @@
 #include <sstream>
 #include <stdlib.h>
 #include <iterator>
+#include <unordered_map>
+#include <map>
 
 using std::string;
 using std::cout;
@@ -23,6 +25,7 @@ using std::queue;
 using std::stringstream;
 using std::istringstream;
 using std::endl;
+using std::unordered_map;
 
 class Node{
 public:
@@ -42,6 +45,34 @@ public:
         rightChild = right;
     }
 };
+
+class Hashtable {
+    std::unordered_map<string, double> htmap;
+    
+public:
+    void put(string key, double value) {
+        if (get(key) == "NA") {
+            htmap.insert({key,value});
+        }
+        else {
+            htmap.at(key) = value;
+        }
+    }
+    
+    string get(string key) {
+        std::unordered_map<std::string,double>::const_iterator got = htmap.find(key);
+        if ( got == htmap.end() ) {
+            return "NA";
+        }
+        else {
+            stringstream ss;
+            ss << got->second;
+            return ss.str();
+        }
+    }
+    
+};
+
 
 int getPrecedence(char token) {
     if (token == ')') {
@@ -318,47 +349,70 @@ double evaluatetree(Node *x){
 //    return val;
 //}
 
-
 int main(int argc, const char * argv[]) {
     std::ios::sync_with_stdio(false);
     
+    Hashtable ht;
+    
     string infix = "";
-    getline(cin, infix);
-    infix.erase(std::remove(infix.begin(), infix.end(), ' '), infix.end());
-    cout << infix << "\n";
     
-//    string *expression = new string[2];
-//    expression[0] = "";
-//    expression[1] = "";
-//    if (infix.substr(0,3) == "let") {
-//        int positionEqual = int(infix.find('='));
-//        expression[0] = infix.substr(3, positionEqual - 3);
-//        expression[1] = infix.substr(positionEqual + 1);
-//    }
-//    cout << expression[0] << "\t" << expression[1];
-    
-    queue<string> myQueue;
-    myQueue = infixToPostfix(infix);
-    int size = int(myQueue.size());
-    
-    string *postfixArray = new string[myQueue.size()];
-    int i = 0;
-    while (!myQueue.empty()) {
-        postfixArray[i] = myQueue.front();
-        myQueue.pop();
-        i++;
+    while (infix != "quit") {
+        
+        bool isVari = true;
+        
+        getline(cin, infix);
+        infix.erase(std::remove(infix.begin(), infix.end(), ' '), infix.end());
+        
+        string *expression = new string[2];
+        expression[0] = "";
+        expression[1] = "";
+        if (infix.substr(0,3) == "let") {
+            int positionEqual = int(infix.find('='));
+            expression[0] = infix.substr(3, positionEqual - 3);
+            expression[1] = infix.substr(positionEqual + 1);
+            
+            isVari = false;
+        }
+        else if (getPrecedence(infix[0]) > -2) {
+            isVari = false;
+            expression[0] = "";
+            expression[1] = infix.substr(0);
+        }
+        for (int i = 0; i < infix.size(); i++) {
+            string s = "";
+            s = infix[i];
+            if (isOperator(s)) {
+                isVari = false;
+                i = int(infix.size());
+            }
+        }
+        if (isVari) {
+            cout << ht.get(&infix[0]) << "\n";
+        }
+//        cout << expression[0] << "\t" << expression[1] << "\n";
+        
+        if (!isVari) {
+            queue<string> myQueue;
+            myQueue = infixToPostfix(expression[1]);
+            int size = int(myQueue.size());
+            string *postfixArray = new string[myQueue.size()];
+            int i = 0;
+            while (!myQueue.empty()) {
+                postfixArray[i] = myQueue.front();
+                myQueue.pop();
+                i++;
+            }
+            Node *root = createTreeWithPostfix(postfixArray, size);
+            double answer = evaluatetree(root);
+            cout << answer << "\n";
+            
+            ht.put("ans", answer);
+
+            if (expression[0] != "") {
+                ht.put(expression[0], answer);
+            }
+        }
     }
-    
-    Node *root = createTreeWithPostfix(postfixArray, size);
-    double answer = evaluatetree(root);
-    cout << "\n" << answer;
-    
-//    int answer = evalPostfixWithStack(postfixArray, size);
-//    cout << "\n" << answer;
-    
-//    for (int i = 0; i < size; i++) {
-//        cout << postfixArray[i] << " ";
-//    }
     
     cout << "\n";
     return 0;
