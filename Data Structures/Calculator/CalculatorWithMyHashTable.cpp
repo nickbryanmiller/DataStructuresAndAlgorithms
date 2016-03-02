@@ -14,8 +14,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <iterator>
-#include <unordered_map>
-#include <map>
+//#include <unordered_map>
 
 using std::string;
 using std::cout;
@@ -25,7 +24,9 @@ using std::queue;
 using std::stringstream;
 using std::istringstream;
 using std::endl;
-using std::unordered_map;
+//using std::unordered_map;
+using std::stoi;
+using std::stod;
 
 bool didDivideByZero = false;
 bool variableDoesNotExist = false;
