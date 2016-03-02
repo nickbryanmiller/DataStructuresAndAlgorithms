@@ -27,6 +27,7 @@ using std::endl;
 //using std::unordered_map;
 using std::stoi;
 using std::stod;
+using std::size_t;
 
 bool didDivideByZero = false;
 bool variableDoesNotExist = false;
