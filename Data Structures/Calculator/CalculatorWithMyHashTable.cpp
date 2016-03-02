@@ -164,7 +164,7 @@ public:
         // Else we search the bucket to make sure it does not exist before adding it
         else {
             LinkedHashEntry *entry = table[hash];
-            while (entry->getNext() != NULL) {
+            while (entry->getNext() != NULL && entry->getKey() != key) {
                 entry = entry->getNext();
             }
             if (entry->getKey() == key) {
