@@ -135,7 +135,7 @@ public:
         // It might be useful to find the nearest prime around tablesize instead
         int hash = (str_hash(key) % tableSize);
         if (table[hash] == NULL) {
-            return "NA";
+            return "Undeclared-Variable";
         }
         // If the position is not null we travel the linked list looking for the same key
         else {
@@ -144,7 +144,7 @@ public:
                 entry = entry->getNext();
             }
             if (entry == NULL) {
-                return "NA";
+                return "Undeclared-Variable";
             }
             else {
                 return entry->getValue();
@@ -385,10 +385,10 @@ queue<string> infixToPostfix(string infix) {
                 i++;
             }
             string vari = ht.get(postfix);
-            if (vari != "NA") {
+            if (vari != "Undeclared-Variable") {
                 myQueue.push(vari);
             }
-            else if (vari == "NA") {
+            else if (vari == "Undeclared-Variable") {
                 myQueue.push("0");
                 variableDoesNotExist = true;
             }
@@ -613,6 +613,10 @@ int main(int argc, const char * argv[]) {
             string s = "";
             s = infix[i];
             if (isOperator(s)) {
+                isVari = false;
+                i = int(infix.size());
+            }
+            else if (getPrecedence(infix[i]) == 1) {
                 isVari = false;
                 i = int(infix.size());
             }
