@@ -27,7 +27,6 @@ using std::endl;
 //using std::unordered_map;
 using std::stoi;
 using std::stod;
-using std::size_t;
 
 bool didDivideByZero = false;
 bool variableDoesNotExist = false;
@@ -110,9 +109,14 @@ private:
         delete[] oldTable;
     }
     
+    // This mwthod turns a string into a large number so that we can do modulo tablesize to get it into a bucket
     size_t hashMe(string &data) {
         size_t h(0);
-        for (int i=0; i<data.length(); i++) {
+        
+        // We go through each char of the string
+        // We xor a 6 left bit shit with a 26 right bit shift and then xor that with the original char
+        // This reason there is a even distribution
+        for (int i = 0; i < data.length(); i++) {
             h = (h << 6) ^ (h >> 26) ^ data[i];
         }
         return h;
