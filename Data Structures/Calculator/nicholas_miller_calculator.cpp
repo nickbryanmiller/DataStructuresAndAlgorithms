@@ -27,6 +27,7 @@ using std::endl;
 //using std::unordered_map;
 using std::stoi;
 using std::stod;
+using std::stof;
 
 bool didDivideByZero = false;
 bool variableDoesNotExist = false;
@@ -455,7 +456,7 @@ Node* createTreeWithPostfix(string postfix[], int size) {
             root = new Node(postfix[i]);
             st.push(root);
         }
-        // If it is an operator they should go to the right spot of the tree
+        // If it is an operator they should go to the correct spot of the tree
         else {
             root = new Node(postfix[i]);
             
@@ -491,8 +492,8 @@ void inorder(Node *t) {
 }
 
 // This is a method that does all of our operations
-double doMathFromTree(double a, double b, string op) {
-    double answer = 0;
+float doMathFromTree(float a, float b, string op) {
+    float answer = 0;
     
     if (op == "+") {
         answer = a + b;
@@ -527,7 +528,7 @@ double evaluatetree(Node *x){
         
         // If we are at a leaf we return that node's value. This is the base case
         if (!isOperator(x->data)) {
-            return stod(x->data);
+            return stof(x->data);
         }
         // If it is an operator we pass the two children to the math function recursively
         else if (isOperator(x->data)) {
@@ -665,7 +666,7 @@ int main(int argc, const char * argv[]) {
                 Node *root = createTreeWithPostfix(postfixArray, size);
                 
                 // Compute the answer of the binary expression tree
-                double answer = evaluatetree(root);
+                float answer = evaluatetree(root);
                 
                 // If the result is not a division by zero and the user is not setting a variable print the answer
                 if (infix.substr(0,3) != "let" && !didDivideByZero) {
