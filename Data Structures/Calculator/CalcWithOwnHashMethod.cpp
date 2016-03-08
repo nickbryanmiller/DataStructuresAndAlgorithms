@@ -27,6 +27,7 @@ using std::endl;
 //using std::unordered_map;
 using std::stoi;
 using std::stod;
+using std::stof;
 
 bool didDivideByZero = false;
 bool variableDoesNotExist = false;
@@ -455,7 +456,7 @@ Node* createTreeWithPostfix(string postfix[], int size) {
             root = new Node(postfix[i]);
             st.push(root);
         }
-        // If it is an operator they should go to the right spot of the tree
+        // If it is an operator they should go to the correct spot of the tree
         else {
             root = new Node(postfix[i]);
             
@@ -491,8 +492,8 @@ void inorder(Node *t) {
 }
 
 // This is a method that does all of our operations
-double doMathFromTree(double a, double b, string op) {
-    double answer = 0;
+float doMathFromTree(float a, float b, string op) {
+    float answer = 0;
     
     if (op == "+") {
         answer = a + b;
@@ -527,7 +528,7 @@ double evaluatetree(Node *x){
         
         // If we are at a leaf we return that node's value. This is the base case
         if (!isOperator(x->data)) {
-            return stod(x->data);
+            return stof(x->data);
         }
         // If it is an operator we pass the two children to the math function recursively
         else if (isOperator(x->data)) {
@@ -546,44 +547,71 @@ double evaluatetree(Node *x){
  *  common in technical interviews and I am already comfortable with stacks
  */
 //// This is a method that does all of our operations
-//int evalFromStack(int op1, int op2, string operate) {
-//    switch (operate[0]) {
-//        case '*': return op2 * op1;
-//        case '/': return op2 / op1;
-//        case '+': return op2 + op1;
-//        case '-': return op2 - op1;
-//        default : return 0;
+//float evalFromStack(float op1, float op2, string op) {
+//    double answer = 0;
+//    
+//    if (op == "+") {
+//        answer = op2 + op1;
 //    }
+//    else if (op == "-") {
+//        answer = op2 - op1;
+//    }
+//    else if (op == "*") {
+//        answer = op2 * op1;
+//    }
+//    else if (op == "/") {
+//        
+//        // If there is a division by zero flag that this occured and return a zero instead of 'inf'
+//        if (op1 == 0) {
+//            didDivideByZero = true;
+//            answer = 0;
+//        }
+//        else if (op1 != 0) {
+//            answer = op2 / op1;
+//        }
+//    }
+//    else if (op == "^") {
+//        answer = pow(op2, op1);
+//    }
+//    
+//    return answer;
 //}
 //
 //// This makes a stack and does the math based on that
-//int evalPostfixWithStack(string postfix[], int size) {
-//    stack<int> s;
+//float evalPostfixWithStack(string postfix[], int size) {
+//    stack<float> s;
 //    int i = 0;
 //    string ch;
-//    int val = 0;
+//    float val = 0;
 //
+//    // In case there is only one number as in let x = 4
+//    if (size == 1) {
+//        ch = postfix[0];
+//        return std::stof(ch);
+//    }
+//    
 //    while (i < size) {
 //        ch = postfix[i];
-//
+//        
 //        // If it is an operand we push it to that stack
 //        if (!isOperator(ch)) {
-//            s.push(std::stoi(ch));
+//            s.push(std::stof(ch));
 //        }
-//
+//        
 //        // If it is an operator we pop off the last two operands and call our stack math function with the operand
 //        else {
-//            int op1 = s.top();
+//            float op1 = s.top();
 //            s.pop();
-//            int op2 = s.top();
+//            float op2 = s.top();
 //            s.pop();
 //            val = evalFromStack(op1, op2, ch);
-//
+//            
 //            // We push the result of the math onto the stack to be used in the next case
 //            s.push(val);
 //        }
 //        i++;
 //    }
+//    
 //    return val;
 //}
 
@@ -663,9 +691,11 @@ int main(int argc, const char * argv[]) {
                 
                 // Construct the binary expression tree and return the root node
                 Node *root = createTreeWithPostfix(postfixArray, size);
-                
                 // Compute the answer of the binary expression tree
-                double answer = evaluatetree(root);
+                float answer = evaluatetree(root);
+                
+                // If you wanted to use stacks instead of a binary tree you would delete the two lines above and uncomment the line below
+                // float answer = evalPostfixWithStack(postfixArray, size);
                 
                 // If the result is not a division by zero and the user is not setting a variable print the answer
                 if (infix.substr(0,3) != "let" && !didDivideByZero) {
