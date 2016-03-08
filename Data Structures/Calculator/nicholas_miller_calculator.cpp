@@ -36,11 +36,11 @@ bool variableDoesNotExist = false;
 class LinkedHashEntry {
 private:
     string key;
-    double value;
+    float value;
     LinkedHashEntry *next;
 public:
     // This is our constructor and how we are going to make a new node for that particular bucket
-    LinkedHashEntry(string key, double value) {
+    LinkedHashEntry(string key, float value) {
         this->key = key;
         this->value = value;
         this->next = NULL;
@@ -53,7 +53,7 @@ public:
         ss << value;
         return ss.str();
     }
-    void setValue(double value) {
+    void setValue(float value) {
         this->value = value;
     }
     LinkedHashEntry *getNext() {
@@ -81,7 +81,7 @@ private:
     LinkedHashEntry **table;
     
     // This is standard library method for hashing a string (returns a size_t)
-//    std::hash<std::string> str_hash;
+    //    std::hash<std::string> str_hash;
     
     // If we every reach 128 entries we make a new table double the original size and copy the old table over
     void resize() {
@@ -99,7 +99,7 @@ private:
                 LinkedHashEntry *oldEntry;
                 LinkedHashEntry *entry = oldTable[hash];
                 while (entry != NULL) {
-                    put(entry->getKey(), stod(entry->getValue()));
+                    put(entry->getKey(), stof(entry->getValue()));
                     oldEntry = entry;
                     entry = entry->getNext();
                     delete oldEntry;
@@ -124,7 +124,7 @@ private:
         }
         return hash;
     }
-
+    
     
 public:
     HashTable() {
@@ -170,7 +170,7 @@ public:
     }
     
     // This method sets a value for a particular key
-    void put(string key, double value) {
+    void put(string key, float value) {
         int hash = (hashMe(key) % tableSize);
         
         // If the index is null we make a new node in that bucket with the key/value pair
@@ -523,7 +523,7 @@ float doMathFromTree(float a, float b, string op) {
 }
 
 // The equation to evaluate the tree goes through and passes the parent and the two children to the math method
-double evaluatetree(Node *x){
+float evaluatetree(Node *x){
     if (x != NULL) {
         
         // If we are at a leaf we return that node's value. This is the base case
@@ -532,8 +532,8 @@ double evaluatetree(Node *x){
         }
         // If it is an operator we pass the two children to the math function recursively
         else if (isOperator(x->data)) {
-            double a = evaluatetree(x->leftChild);
-            double b = evaluatetree(x->rightChild);
+            float a = evaluatetree(x->leftChild);
+            float b = evaluatetree(x->rightChild);
             
             return doMathFromTree(a, b, x->data);
         }
@@ -548,8 +548,8 @@ double evaluatetree(Node *x){
  */
 //// This is a method that does all of our operations
 //float evalFromStack(float op1, float op2, string op) {
-//    double answer = 0;
-//    
+//    float answer = 0;
+//
 //    if (op == "+") {
 //        answer = op2 + op1;
 //    }
@@ -560,7 +560,7 @@ double evaluatetree(Node *x){
 //        answer = op2 * op1;
 //    }
 //    else if (op == "/") {
-//        
+//
 //        // If there is a division by zero flag that this occured and return a zero instead of 'inf'
 //        if (op1 == 0) {
 //            didDivideByZero = true;
@@ -573,7 +573,7 @@ double evaluatetree(Node *x){
 //    else if (op == "^") {
 //        answer = pow(op2, op1);
 //    }
-//    
+//
 //    return answer;
 //}
 //
@@ -589,15 +589,15 @@ double evaluatetree(Node *x){
 //        ch = postfix[0];
 //        return std::stof(ch);
 //    }
-//    
+//
 //    while (i < size) {
 //        ch = postfix[i];
-//        
+//
 //        // If it is an operand we push it to that stack
 //        if (!isOperator(ch)) {
 //            s.push(std::stof(ch));
 //        }
-//        
+//
 //        // If it is an operator we pop off the last two operands and call our stack math function with the operand
 //        else {
 //            float op1 = s.top();
@@ -605,13 +605,13 @@ double evaluatetree(Node *x){
 //            float op2 = s.top();
 //            s.pop();
 //            val = evalFromStack(op1, op2, ch);
-//            
+//
 //            // We push the result of the math onto the stack to be used in the next case
 //            s.push(val);
 //        }
 //        i++;
 //    }
-//    
+//
 //    return val;
 //}
 
