@@ -16,15 +16,15 @@ class Graph {
     int numOfVertices;
     std::list<int> *adjList;
     
-    void dFSUtil(int v, bool visited[]) {
+    void doDFS(int vertexIndex, bool visited[]) {
         // Mark the current vertex as visited
-        visited[v] = true;
+        visited[vertexIndex] = true;
         
         // Go through the vertices adjacent to the vertex
         std::list<int>::iterator i;
-        for (i = adjList[v].begin(); i != adjList[v].end(); ++i) {
+        for (i = adjList[vertexIndex].begin(); i != adjList[vertexIndex].end(); ++i) {
             if (!visited[*i]) {
-                dFSUtil(*i, visited);
+                doDFS(*i, visited);
             }
             else if (visited[*i]) {
                 isATree = false;
@@ -43,7 +43,7 @@ public:
         // Add v2 to v1’s list.
         adjList[v1].push_back(v2);
     }
-
+    
     void dFSParticular(int v) {
         // Mark all the nodes as not visited
         bool *visited = new bool[numOfVertices];
@@ -51,8 +51,7 @@ public:
             visited[i] = false;
         }
         
-        // Do DFS recursively
-        dFSUtil(v, visited);
+        doDFS(v, visited);
     }
     
     void dFSAll() {
@@ -64,7 +63,7 @@ public:
         
         for (int i = 0; i < numOfVertices; i++) {
             if (visited[i] == false) {
-                dFSUtil(i, visited);
+                doDFS(i, visited);
             }
         }
     }
